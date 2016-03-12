@@ -13,3 +13,17 @@ To test locally:
 Helpful tutorial to use git/github
 http://readwrite.com/2013/09/30/understanding-github-a-journey-for-beginners-part-1
 http://stackoverflow.com/questions/8775850/how-to-add-files-and-folder-to-github-repo
+
+Useful for later to convert our React WebApp to mobile
+https://auth0.com/blog/2015/12/08/converting-your-web-app-to-mobile/
+
+Good explanation of React
+http://blog.andrewray.me/reactjs-for-stupid-people/
+
+Useful for integrating Facebook authentication
+https://developers.facebook.com/docs/facebook-login/web
+
+General Information:
+Slack: https://caffevinomoscato.slack.com/
+Taiga: https://tree.taiga.io/project/kjjl-moscato/
+Github: https://github.com/CaffeVino/Moscato

@@ -10,3 +10,6 @@ To test locally:
 4. Now whenever you change moscato/src/client/app/index.jsx, npm will use webpack to recompile.
 5. Open moscato/src/client/index.html to see your changes
 
+Helpful tutorial to use git/github
+http://readwrite.com/2013/09/30/understanding-github-a-journey-for-beginners-part-1
+http://stackoverflow.com/questions/8775850/how-to-add-files-and-folder-to-github-repo

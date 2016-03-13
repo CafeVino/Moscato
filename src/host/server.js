@@ -43,6 +43,60 @@ router.get('/', function(req, res) {
 
 // more routes for our API will happen here
 
+router.route('/profile')
+	
+    // edit user profile (accessed at POST http://localhost:8080/api/profile)
+    .post(function(req, res) {
+        var user = new User();      // create a new instance of the User model
+        user.userID = req.body.userID;  // set the userID (comes from the request)
+		user.token = req.body.token;  // set the token (comes from the request)
+		var name = req.body.name;
+		var age = req.body.age;
+		var occupation = req.body.occupation;
+		var company = req.body.company;
+		console.log(req.body);
+		console.log(user.userID + " " + user.token );
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+		
+		User.findOne({ 'userID': user.userID }, 'userID token', function (err, person) {
+			
+		if (err){
+			
+			console.log(err);
+			return
+		}
+		if(person == null)
+		{		
+			
+			res.json({ message: 'User not found' , stat: '0', userID: user.userID, token: user.token});
+			console.log("User not found");
+		}
+		else if(user.userID == person.userID && user.token == person.token) 
+		{
+			res.json({ message: 'Authenticated', stat: '1', userID: user.userID, token: user.token });
+			person.name = name;
+			person.age = age;
+			person.occupation = occupation;
+			person.company = company;
+			person.save(function(err) {
+				if (err)
+				{
+					res.send(err);
+					console.log(err);
+			}});
+		}
+		else if (user.userID == person.userID)
+		{
+			console.log("Incorrect token");
+			res.json({ message: 'Incorrect Token' , stat: '0'});
+		}
+		
+		//console.log('%s %s is a %s.', person.name.first, person.name.last, person.occupation) // Space Ghost is a talk show host.
+		});
+        
+    })
+
 router.route('/login')
 	
     // create a user or login (accessed at POST http://localhost:8080/api/login)

@@ -1,16 +1,43 @@
 import React from 'react';
 import {render} from 'react-dom';
 import AwesomeComponent from './AwesomeComponent.jsx';
-
+import InlineEdit from 'react-edit-inline';
 
 
 var ProfileComponent = React.createClass( {
 
 	getInitialState: function() {
-	return {userID: "", pass: "", loggedIn: "", token: ""}
+	return {token: "", editable: false, name: "Eduardo", age: "27", occupation: "Product Manager", company: "CaffeVino"}
 	},
-
-  
+	
+	editChange: function() {
+		$.post( "http://localhost:8080/api/profile", { userID: this.props.userID, token: this.props.token, name: this.state.name, age: this.state.age, occupation: this.state.occupation, company: this.state.company }, function(response){
+		console.log(response);
+		});
+	
+	},
+	editName: function(text)
+	{
+		this.setState({name: text.name}, function(){this.editChange()});
+		
+	},
+	
+	editAge: function(text)
+	{
+		this.setState({age: text.age}, function(){this.editChange()});
+		
+	},
+	editOccupation: function(text)
+	{
+		this.setState({occupation: text.occupation}, function(){this.editChange()});
+		
+	},
+	editCompany: function(text)
+	{
+		this.setState({company: text.company}, function(){this.editChange()});
+		
+	},
+	
 	handleSubmit: function (e){
 	  var self
 
@@ -57,11 +84,18 @@ var ProfileComponent = React.createClass( {
 	  
 		<img src="http://drhalland.com/wp-content/uploads/2014/06/Dr-Halland-Round-Profile-Pic.png" height="128"/>
       </div>
-	  <div className="midbot1">
-	  <p>Eduardo, 27</p>
+	  <div className="midbotname">
+	  <InlineEdit text={this.state.name} change={this.editName} paramName="name"/>,&nbsp;
 	  </div>
-	  <div className="midbot2">
-	  <p>Product Manager @ CaffeVino</p>
+	  <div className="midbotage">
+	  <InlineEdit text={this.state.age} change={this.editAge} paramName="age"/>
+	  </div>
+	  <div></div>
+	  <div className="midbotoccu">
+	  <InlineEdit text={this.state.occupation} change={this.editOccupation} paramName="occupation"/> &nbsp; @ &nbsp;
+	  </div>
+	  <div className="midbotcompany">
+	  <InlineEdit text={this.state.company} change={this.editCompany} paramName="company"/> 
 	  </div>
 	  <div className="midbot3">
 		  <div className="midbot4">

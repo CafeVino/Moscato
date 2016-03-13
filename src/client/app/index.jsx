@@ -34,7 +34,7 @@ var App = React.createClass( {
 		return (
 		  <div>
 		  
-		  <ProfileComponent />
+		  <ProfileComponent userID={this.state.userID} token={this.state.token}/>
 		  </div>
 		  
 		);

@@ -2,12 +2,16 @@
   "name": "moscato",
   "version": "1.0.0",
   "babel": {
-    "presets": ["es2015", "react"]
+    "presets": [
+      "es2015",
+      "react"
+    ]
   },
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack -d --watch",
+    "build": "webpack -p"
   },
   "repository": {
     "type": "git",
@@ -26,8 +30,7 @@
     "react": "^0.14.7",
     "react-dom": "^0.14.7"
   },
-  "scripts": {
-    "dev": "webpack -d --watch",
-    "build" : "webpack -p"
+  "devDependencies": {
+    "react-edit-inline": "^1.0.6"
   }
 }

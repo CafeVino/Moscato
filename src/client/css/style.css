@@ -70,7 +70,36 @@ body
 	
 }
 
-.midbot2
+.midbotname
+{
+	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
+	font-size: 40pt;
+	 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	
+	margin: 0% 0% 0% 20%;
+	display: inline-block;
+	text-align: left;
+	
+}
+.midbotage
+{
+	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
+	font-size: 40pt;
+	 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	
+	margin: 0% 0% 0% 0%;
+	display: inline-block;
+	text-align: left;
+	
+}
+
+.midbotoccu
 {
 	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
 	font-size: 27pt;
@@ -79,11 +108,29 @@ body
 	border-width: 5px;
 	border-style: dotted;
 	
-	margin: 0% 20% 0% 20%;
+	margin: 0% 0% 0% 20%;
+	display: inline-block;
 	
 	text-align: left;
 	
 }
+
+.midbotcompany
+{
+	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
+	font-size: 27pt;
+	 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	
+	margin: 0% 0% 0% 0%;
+	display: inline-block;
+	
+	text-align: left;
+	
+}
+
 .midbot3
 {
 	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;

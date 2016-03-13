@@ -1,0 +1,46 @@
+body
+{
+	background-color: 4A96AD;
+}
+
+.jumbot
+{
+	/* 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	*/
+	text-align: center;
+	margin: 10% 20% 0% 20%;
+	
+}
+
+.jumbot2
+{
+	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
+	font-size: 40pt;
+	/* 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	*/
+	margin: 0% 20% 0% 20%;
+	text-align: center;
+	
+}
+
+.jumbot3
+{
+	/* 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	*/
+	margin: 0% 20% 0% 20%;
+	text-align: center;
+}
+
+.login-box
+{
+	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
+}

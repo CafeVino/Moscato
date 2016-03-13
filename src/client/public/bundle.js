@@ -70,31 +70,70 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var App = function (_React$Component) {
-	  _inherits(App, _React$Component);
+			_inherits(App, _React$Component);
 	
-	  function App() {
-	    _classCallCheck(this, App);
+			function App() {
+					_classCallCheck(this, App);
 	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
-	  }
+					return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
+			}
 	
-	  _createClass(App, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          'p',
-	          null,
-	          ' Hello React!!'
-	        ),
-	        _react2.default.createElement(_AwesomeComponent2.default, null)
-	      );
-	    }
-	  }]);
+			_createClass(App, [{
+					key: 'render',
+					value: function render() {
 	
-	  return App;
+							return _react2.default.createElement(
+									'div',
+									null,
+									_react2.default.createElement(
+											'div',
+											{ className: 'jumbot' },
+											_react2.default.createElement('img', { src: 'http://icons.iconarchive.com/icons/graphicloads/food-drink/128/grapes-icon.png' })
+									),
+									_react2.default.createElement(
+											'div',
+											{ className: 'jumbot2' },
+											_react2.default.createElement(
+													'p',
+													null,
+													'Moscato'
+											)
+									),
+									_react2.default.createElement(
+											'div',
+											{ className: 'jumbot3' },
+											_react2.default.createElement(
+													'div',
+													{ className: 'login-box' },
+													_react2.default.createElement(
+															'label',
+															{ 'for': 'username' },
+															'Username'
+													),
+													_react2.default.createElement('br', null),
+													_react2.default.createElement('input', { type: 'text', id: 'username' }),
+													_react2.default.createElement('br', null),
+													_react2.default.createElement(
+															'label',
+															{ 'for': 'password' },
+															'Password'
+													),
+													_react2.default.createElement('br', null),
+													_react2.default.createElement('input', { type: 'password', id: 'password' }),
+													_react2.default.createElement('br', null),
+													_react2.default.createElement(
+															'button',
+															{ type: 'submit' },
+															'Sign In'
+													),
+													_react2.default.createElement('br', null)
+											)
+									)
+							);
+					}
+			}]);
+	
+			return App;
 	}(_react2.default.Component);
 	
 	(0, _reactDom.render)(_react2.default.createElement(App, null), document.getElementById('app'));

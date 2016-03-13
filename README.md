@@ -27,3 +27,14 @@ General Information:
 Slack: https://caffevinomoscato.slack.com/
 Taiga: https://tree.taiga.io/project/kjjl-moscato/
 Github: https://github.com/CaffeVino/Moscato
+
+Excellent tutorial for setting up a server and linking it to a database:
+https://scotch.io/tutorials/build-a-restful-api-using-node-and-express-4
+
+To run the NodeJS server:
+1. You need to change directory to \moscato\src\host
+2. Run npm server.js in terminal/command
+3. You will now be hosting the API on your own computer at localhost:8080/api
+Note that we are using a database that is located https://mlab.com/databases/moscato
+Note that you will not be able to connect to the database immediately because username/password are hidden in server.js.
+Contact me if you need the username password for the database.

@@ -40,3 +40,7 @@ Note that you will not be able to connect to the database immediately because us
 Contact me if you need the username password for the database.
 Important note that may cost you 2+ hours to figure out! If you are using mongolab to host your free mongodb, you must use mongoose version 4.x.x, due to authentication issues (different default encryption types)
 http://stackoverflow.com/questions/34593434/auth-failed-code-18-when-connecting-to-mongolab-database
+
+Note that if you have CORS disabled and are running nodejs and client locally, the client will not be able to access post responses.
+http://enable-cors.org/server_expressjs.html
+

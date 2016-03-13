@@ -40,6 +40,107 @@ body
 	text-align: center;
 }
 
+.jumbot4
+{
+	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
+	font-size: 40pt;
+	/* 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	*/
+	padding: 10% 20% 0% 20%;
+	margin: 0% 20% 0% 20%;
+	text-align: center;
+	
+}
+
+.midbot1
+{
+	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
+	font-size: 40pt;
+	 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	
+	margin: 0% 20% 0% 20%;
+	
+	text-align: left;
+	
+}
+
+.midbot2
+{
+	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
+	font-size: 27pt;
+	 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	
+	margin: 0% 20% 0% 20%;
+	
+	text-align: left;
+	
+}
+.midbot3
+{
+	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
+	font-size: 18pt;
+	 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	
+	margin: 0% 20% 0% 20%;
+	
+	text-align: left;
+	
+}
+.midbot4
+{
+	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;
+	font-size: 18pt;
+	 
+	border-color: white;
+	border-width: 5px;
+	border-style: dotted;
+	
+	margin: 0% 0% 0% 0%;
+	width: 33%;
+	display: inline-block;
+	vertical-align: top;
+	text-align: left;
+	
+}
+
+ul.navi {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li.navi{
+    float: left;
+}
+
+li.navi a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li.navi a:hover {
+    background-color: #111;
+}
+
+
 .login-box
 {
 	font-family: "Bodoni MT", Didot, "Didot LT STD", "Book Antiqua", Garamond, "Times New Roman", serif;

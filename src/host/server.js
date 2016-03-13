@@ -53,7 +53,8 @@ router.route('/login')
 		user.token = Date.now().toString() + user.userID;
 		console.log(req.body);
 		console.log(user.userID + " " + user.pass + " " + user.token );
-		
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 		
 		User.findOne({ 'userID': user.userID }, 'userID pass', function (err, person) {
 			
@@ -73,7 +74,7 @@ router.route('/login')
 					console.log(err);
 				}
 
-				res.json({ message: 'User created!' , stat: 'connected', userID: user.userID, token: user.token});
+				res.json({ message: 'User created!' , stat: '1', userID: user.userID, token: user.token});
 				console.log("User created!");
 			});	
 		}
@@ -81,7 +82,7 @@ router.route('/login')
 		{
 			
 			console.log("hita");
-			res.json({ message: 'Logged In', stat: 'connected', userID: user.userID, token: user.token });
+			res.json({ message: 'Logged In', stat: '1', userID: user.userID, token: user.token });
 			person.token = user.token;
 			person.save(function(err) {
 				if (err)
@@ -94,12 +95,11 @@ router.route('/login')
 		{
 			console.log("hitb");
 			console.log("Incorrect Password");
-			res.json({ message: 'Incorrect Password' });
+			res.json({ message: 'Incorrect Password' , stat: '0'});
 		}
 		
-        console.log("hit2");
 		//console.log('%s %s is a %s.', person.name.first, person.name.last, person.occupation) // Space Ghost is a talk show host.
-		})
+		});
         
     })
 	

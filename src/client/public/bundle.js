@@ -55,9 +55,13 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 158);
 	
-	var _AwesomeComponent = __webpack_require__(/*! ./AwesomeComponent.jsx */ 159);
+	var _LoginComponent = __webpack_require__(/*! ./LoginComponent.jsx */ 159);
 	
-	var _AwesomeComponent2 = _interopRequireDefault(_AwesomeComponent);
+	var _LoginComponent2 = _interopRequireDefault(_LoginComponent);
+	
+	var _ProfileComponent = __webpack_require__(/*! ./ProfileComponent.jsx */ 161);
+	
+	var _ProfileComponent2 = _interopRequireDefault(_ProfileComponent);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -66,87 +70,28 @@
 	
 	
 		getInitialState: function getInitialState() {
-			return { userID: "", pass: "" };
+			return { userID: "", token: "", loggedIn: "" };
 		},
 	
-		handleSubmit: function handleSubmit(e) {
-			var self;
-	
-			e.preventDefault();
-			self = this;
-	
-			console.log(this.state);
-	
-			var body = {
-				userID: this.state.userID,
-				pass: this.state.pass
-			};
-	
-			$.post("http://localhost:8080/api/login", { userID: this.state.userID, pass: this.state.pass });
-		},
-		userIDChange: function userIDChange(e) {
-			console.log(e.target.value);
-			this.setState({
-				userID: e.target.value
-			});
-		},
-		passChange: function passChange(e) {
-			console.log(e.target.value);
-			this.setState({
-				pass: e.target.value
-			});
+		stateChanged: function stateChanged(_userID, _token, _loggedIn) {
+			this.setState({ userID: _userID, token: _token, loggedIn: _loggedIn });
 		},
 	
 		render: function render() {
 	
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement(
+			if (this.state.loggedIn == "") {
+				return _react2.default.createElement(
 					'div',
-					{ className: 'jumbot' },
-					_react2.default.createElement('img', { src: 'http://icons.iconarchive.com/icons/graphicloads/food-drink/128/grapes-icon.png' })
-				),
-				_react2.default.createElement(
+					null,
+					_react2.default.createElement(_LoginComponent2.default, { stateChanged: this.stateChanged })
+				);
+			} else if (this.state.loggedIn == "1") {
+				return _react2.default.createElement(
 					'div',
-					{ className: 'jumbot2' },
-					_react2.default.createElement(
-						'p',
-						null,
-						'Moscato'
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'jumbot3' },
-					_react2.default.createElement(
-						'form',
-						{ className: 'login-box', onSubmit: this.handleSubmit },
-						_react2.default.createElement(
-							'label',
-							{ 'for': 'username' },
-							'Username'
-						),
-						_react2.default.createElement('br', null),
-						_react2.default.createElement('input', { type: 'text', id: 'username', onChange: this.userIDChange, value: this.state.userID }),
-						_react2.default.createElement('br', null),
-						_react2.default.createElement(
-							'label',
-							{ 'for': 'password' },
-							'Password'
-						),
-						_react2.default.createElement('br', null),
-						_react2.default.createElement('input', { type: 'password', id: 'password', onChange: this.passChange, value: this.state.pass }),
-						_react2.default.createElement('br', null),
-						_react2.default.createElement(
-							'button',
-							{ type: 'submit' },
-							'Sign In'
-						),
-						_react2.default.createElement('br', null)
-					)
-				)
-			);
+					null,
+					_react2.default.createElement(_ProfileComponent2.default, null)
+				);
+			}
 		}
 	});
 	
@@ -20229,6 +20174,126 @@
 
 /***/ },
 /* 159 */
+/*!*******************************************!*\
+  !*** ./src/client/app/LoginComponent.jsx ***!
+  \*******************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 158);
+	
+	var _AwesomeComponent = __webpack_require__(/*! ./AwesomeComponent.jsx */ 160);
+	
+	var _AwesomeComponent2 = _interopRequireDefault(_AwesomeComponent);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var LoginComponent = _react2.default.createClass({
+		displayName: 'LoginComponent',
+	
+	
+		getInitialState: function getInitialState() {
+			return { userID: "", pass: "", loggedIn: "", token: "" };
+		},
+	
+		postCallBack: function postCallBack(_response) {
+			this.props.stateChanged(_response.userID, _response.token, _response.stat);
+		},
+		handleSubmit: function handleSubmit(e) {
+			var self;
+	
+			e.preventDefault();
+			self = this;
+	
+			var body = {
+				userID: this.state.userID,
+				pass: this.state.pass
+			};
+	
+			var _response = {};
+	
+			$.post("http://localhost:8080/api/login", { userID: this.state.userID, pass: this.state.pass }, function (response) {
+				console.log(response);
+				self.postCallBack(response);
+			});
+		},
+		userIDChange: function userIDChange(e) {
+			this.setState({
+				userID: e.target.value
+			});
+		},
+		passChange: function passChange(e) {
+			this.setState({
+				pass: e.target.value
+			});
+		},
+	
+		render: function render() {
+	
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot' },
+					_react2.default.createElement('img', { src: 'http://icons.iconarchive.com/icons/graphicloads/food-drink/128/grapes-icon.png' })
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot2' },
+					_react2.default.createElement(
+						'p',
+						null,
+						'Moscato'
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot3' },
+					_react2.default.createElement(
+						'form',
+						{ className: 'login-box', onSubmit: this.handleSubmit },
+						_react2.default.createElement(
+							'label',
+							null,
+							'Username'
+						),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement('input', { type: 'text', id: 'username', onChange: this.userIDChange, value: this.state.userID }),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement(
+							'label',
+							null,
+							'Password'
+						),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement('input', { type: 'password', id: 'password', onChange: this.passChange, value: this.state.pass }),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement(
+							'button',
+							{ type: 'submit' },
+							'Sign In'
+						),
+						_react2.default.createElement('br', null)
+					)
+				)
+			);
+		}
+	});
+	
+	exports.default = LoginComponent;
+
+/***/ },
+/* 160 */
 /*!*********************************************!*\
   !*** ./src/client/app/AwesomeComponent.jsx ***!
   \*********************************************/
@@ -20302,6 +20367,241 @@
 	}(_react2.default.Component);
 	
 	exports.default = AwesomeComponent;
+
+/***/ },
+/* 161 */
+/*!*********************************************!*\
+  !*** ./src/client/app/ProfileComponent.jsx ***!
+  \*********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 158);
+	
+	var _AwesomeComponent = __webpack_require__(/*! ./AwesomeComponent.jsx */ 160);
+	
+	var _AwesomeComponent2 = _interopRequireDefault(_AwesomeComponent);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var ProfileComponent = _react2.default.createClass({
+		displayName: 'ProfileComponent',
+	
+	
+		getInitialState: function getInitialState() {
+			return { userID: "", pass: "", loggedIn: "", token: "" };
+		},
+	
+		handleSubmit: function handleSubmit(e) {
+			var self;
+	
+			e.preventDefault();
+			self = this;
+	
+			console.log(this.state);
+	
+			var body = {
+				userID: this.state.userID,
+				pass: this.state.pass
+			};
+	
+			var _response = {};
+	
+			$.post("http://localhost:8080/api/login", { userID: this.state.userID, pass: this.state.pass }, function (response) {
+				console.log(response);
+				_response = response;
+			});
+			this.props.stateChanged(_response.userID, _response.token, _response.loggedIn);
+		},
+		userIDChange: function userIDChange(e) {
+			this.setState({
+				userID: e.target.value
+			});
+		},
+		passChange: function passChange(e) {
+			this.setState({
+				pass: e.target.value
+			});
+		},
+	
+		render: function render() {
+	
+			var divImage = {
+				backgroundImage: "url(http://cdn.bigbangfish.com/beautiful/beautiful-beaches/beautiful-beaches-2.jpg)", backgroundSize: "cover"
+			};
+	
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot4', style: divImage },
+					_react2.default.createElement('img', { src: 'http://drhalland.com/wp-content/uploads/2014/06/Dr-Halland-Round-Profile-Pic.png', height: '128' })
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot1' },
+					_react2.default.createElement(
+						'p',
+						null,
+						'Eduardo, 27'
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot2' },
+					_react2.default.createElement(
+						'p',
+						null,
+						'Product Manager @ CaffeVino'
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot3' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4' },
+						_react2.default.createElement(
+							'p',
+							null,
+							'Interests/Hobbies'
+						),
+						_react2.default.createElement(
+							'ul',
+							null,
+							_react2.default.createElement(
+								'li',
+								null,
+								'Eating out'
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								'Hiking'
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								'Meeting new people'
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4' },
+						_react2.default.createElement(
+							'p',
+							null,
+							'Goals/Aspirations'
+						),
+						_react2.default.createElement(
+							'ul',
+							null,
+							_react2.default.createElement(
+								'li',
+								null,
+								'Get my pilots license'
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								'Create a startup'
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								'Travel'
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4' },
+						_react2.default.createElement(
+							'p',
+							null,
+							'About Me'
+						),
+						_react2.default.createElement(
+							'p',
+							{ style: { fontSize: "14" } },
+							'Hello! My name is Eduardo and I love meeting new people, trying new things, and just hanging out! I like craft beers and wine and just want to enjoy life!'
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot2' },
+					_react2.default.createElement(
+						'ul',
+						{ className: 'navi' },
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/profile_318-40185.png', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/user-profiles-in-connection_318-47860.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/upload-cloud_318-84457.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/multiple-user-profile-images_318-36861.jpg', height: '56' })
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot3' },
+					_react2.default.createElement(
+						'form',
+						{ className: 'login-box', onSubmit: this.handleSubmit },
+						_react2.default.createElement(
+							'label',
+							null,
+							'Username'
+						),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement('input', { type: 'text', id: 'username', onChange: this.userIDChange, value: this.state.userID }),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement(
+							'label',
+							null,
+							'Password'
+						),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement('input', { type: 'password', id: 'password', onChange: this.passChange, value: this.state.pass }),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement(
+							'button',
+							{ type: 'submit' },
+							'Sign In'
+						),
+						_react2.default.createElement('br', null)
+					)
+				)
+			);
+		}
+	});
+	
+	exports.default = ProfileComponent;
 
 /***/ }
 /******/ ]);

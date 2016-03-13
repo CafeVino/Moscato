@@ -4,10 +4,46 @@ import AwesomeComponent from './AwesomeComponent.jsx';
 
 
 
-class App extends React.Component {
+var App = React.createClass( {
 
+	getInitialState: function() {
+	return {userID: "", pass: ""}
+	},
+
+  
+	handleSubmit: function (e){
+	  var self
+
+	  e.preventDefault()
+	  self = this
+
+	  console.log(this.state);
+
+	  var body = {
+		userID: this.state.userID,
+		pass: this.state.pass
+	  };
+	  
+	  $.post( "http://localhost:8080/api/login", { userID: this.state.userID, pass: this.state.pass } );
+
+
+	},
+	userIDChange: function(e) {
+	console.log(e.target.value);
+    this.setState({
+      userID: e.target.value
+    })
+  },
+  passChange: function(e) {
+	console.log(e.target.value);
+    this.setState({
+      pass: e.target.value
+    })
+  },
 	
-  render () {
+  
+  
+  render: function() {
   
     return (
       <div>
@@ -20,24 +56,24 @@ class App extends React.Component {
 	  </div>
 	  <div className="jumbot3">
 	  
-	  <div className="login-box">
+	  <form className="login-box" onSubmit={this.handleSubmit}>
 			<label for="username">Username</label>
 			<br/>
-			<input type="text" id="username" />
+			<input type="text" id="username" onChange={this.userIDChange} value={this.state.userID}/>
 			<br/>
 			<label for="password">Password</label>
 			<br/>
-			<input type="password" id="password" />
+			<input type="password" id="password" onChange={this.passChange} value={this.state.pass}/>
 			<br/>
 			<button type="submit">Sign In</button>
 			<br/>
-		</div>
+		</form>
 	  
 	  
 	  </div>
 	  </div>
     );
   }
-}
+});
 
-render(<App/>, document.getElementById('app'));
+React.render(<App/>, document.getElementById('app'));

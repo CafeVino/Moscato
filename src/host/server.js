@@ -12,8 +12,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 var mongoose   = require('mongoose');
-mongoose.connect('mongodb://<username>:<password>@ds011369.mlab.com:11369/moscato'); // connect to our database
+mongoose.connect('mongodb://moscato:testdatabase1@ds011369.mlab.com:11369/moscato', function (error) {
+  // Do things once connected
+  if(error)
+  {
+	  console.log(error);
+  }
+  console.log(mongoose.connection.readyState);
+});// connect to our database
 var Bear     = require('./app/models/bear');
+var User     = require('./app/models/user');
 
 var port = process.env.PORT || 8080;        // set our port
 
@@ -34,6 +42,79 @@ router.get('/', function(req, res) {
 });
 
 // more routes for our API will happen here
+
+router.route('/login')
+	
+    // create a user or login (accessed at POST http://localhost:8080/api/login)
+    .post(function(req, res) {
+        var user = new User();      // create a new instance of the User model
+        user.userID = req.body.userID;  // set the userID (comes from the request)
+		user.pass = req.body.pass;  // set the userID (comes from the request)
+		user.token = Date.now().toString() + user.userID;
+		console.log(req.body);
+		console.log(user.userID + " " + user.pass + " " + user.token );
+		
+		
+		User.findOne({ 'userID': user.userID }, 'userID pass', function (err, person) {
+			
+		if (err){
+			
+			console.log(err);
+			return
+		}
+		console.log("hit0");
+		if(person == null)
+		{		
+			// save the user and check for errors
+			user.save(function(err) {
+				if (err)
+				{
+					res.send(err);
+					console.log(err);
+				}
+
+				res.json({ message: 'User created!' , stat: 'connected', userID: user.userID, token: user.token});
+				console.log("User created!");
+			});	
+		}
+		else if(user.userID == person.userID && user.pass == person.pass) 
+		{
+			
+			console.log("hita");
+			res.json({ message: 'Logged In', stat: 'connected', userID: user.userID, token: user.token });
+			person.token = user.token;
+			person.save(function(err) {
+				if (err)
+				{
+					res.send(err);
+					console.log(err);
+			}});
+		}
+		else if (user.userID == person.userID)
+		{
+			console.log("hitb");
+			console.log("Incorrect Password");
+			res.json({ message: 'Incorrect Password' });
+		}
+		
+        console.log("hit2");
+		//console.log('%s %s is a %s.', person.name.first, person.name.last, person.occupation) // Space Ghost is a talk show host.
+		})
+        
+    })
+	
+	    // get all the bears (accessed at GET http://localhost:8080/api/bears)
+    .get(function(req, res) {
+        Bear.find(function(err, bears) {
+            if (err)
+                res.send(err);
+
+            res.json(bears);
+        });
+    });
+	
+
+
 // on routes that end in /bears
 // ----------------------------------------------------
 router.route('/bears')

@@ -49,8 +49,6 @@
 
 	'use strict';
 	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	var _react = __webpack_require__(/*! react */ 1);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -63,80 +61,96 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var App = _react2.default.createClass({
+		displayName: 'App',
 	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+		getInitialState: function getInitialState() {
+			return { userID: "", pass: "" };
+		},
 	
-	var App = function (_React$Component) {
-			_inherits(App, _React$Component);
+		handleSubmit: function handleSubmit(e) {
+			var self;
 	
-			function App() {
-					_classCallCheck(this, App);
+			e.preventDefault();
+			self = this;
 	
-					return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
-			}
+			console.log(this.state);
 	
-			_createClass(App, [{
-					key: 'render',
-					value: function render() {
+			var body = {
+				userID: this.state.userID,
+				pass: this.state.pass
+			};
 	
-							return _react2.default.createElement(
-									'div',
-									null,
-									_react2.default.createElement(
-											'div',
-											{ className: 'jumbot' },
-											_react2.default.createElement('img', { src: 'http://icons.iconarchive.com/icons/graphicloads/food-drink/128/grapes-icon.png' })
-									),
-									_react2.default.createElement(
-											'div',
-											{ className: 'jumbot2' },
-											_react2.default.createElement(
-													'p',
-													null,
-													'Moscato'
-											)
-									),
-									_react2.default.createElement(
-											'div',
-											{ className: 'jumbot3' },
-											_react2.default.createElement(
-													'div',
-													{ className: 'login-box' },
-													_react2.default.createElement(
-															'label',
-															{ 'for': 'username' },
-															'Username'
-													),
-													_react2.default.createElement('br', null),
-													_react2.default.createElement('input', { type: 'text', id: 'username' }),
-													_react2.default.createElement('br', null),
-													_react2.default.createElement(
-															'label',
-															{ 'for': 'password' },
-															'Password'
-													),
-													_react2.default.createElement('br', null),
-													_react2.default.createElement('input', { type: 'password', id: 'password' }),
-													_react2.default.createElement('br', null),
-													_react2.default.createElement(
-															'button',
-															{ type: 'submit' },
-															'Sign In'
-													),
-													_react2.default.createElement('br', null)
-											)
-									)
-							);
-					}
-			}]);
+			$.post("http://localhost:8080/api/login", { userID: this.state.userID, pass: this.state.pass });
+		},
+		userIDChange: function userIDChange(e) {
+			console.log(e.target.value);
+			this.setState({
+				userID: e.target.value
+			});
+		},
+		passChange: function passChange(e) {
+			console.log(e.target.value);
+			this.setState({
+				pass: e.target.value
+			});
+		},
 	
-			return App;
-	}(_react2.default.Component);
+		render: function render() {
 	
-	(0, _reactDom.render)(_react2.default.createElement(App, null), document.getElementById('app'));
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot' },
+					_react2.default.createElement('img', { src: 'http://icons.iconarchive.com/icons/graphicloads/food-drink/128/grapes-icon.png' })
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot2' },
+					_react2.default.createElement(
+						'p',
+						null,
+						'Moscato'
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot3' },
+					_react2.default.createElement(
+						'form',
+						{ className: 'login-box', onSubmit: this.handleSubmit },
+						_react2.default.createElement(
+							'label',
+							{ 'for': 'username' },
+							'Username'
+						),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement('input', { type: 'text', id: 'username', onChange: this.userIDChange, value: this.state.userID }),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement(
+							'label',
+							{ 'for': 'password' },
+							'Password'
+						),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement('input', { type: 'password', id: 'password', onChange: this.passChange, value: this.state.pass }),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement(
+							'button',
+							{ type: 'submit' },
+							'Sign In'
+						),
+						_react2.default.createElement('br', null)
+					)
+				)
+			);
+		}
+	});
+	
+	_react2.default.render(_react2.default.createElement(App, null), document.getElementById('app'));
 
 /***/ },
 /* 1 */

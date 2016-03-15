@@ -4,28 +4,39 @@ import AwesomeComponent from './AwesomeComponent.jsx';
 import InlineEdit from 'react-edit-inline';
 
 
-var ProfileComponent = React.createClass( {
+var MyProfileComponent = React.createClass( {
 
 	getInitialState: function() {
-	return {name: "Eduardo", age: "27", occupation: "Product Manager", company: "CaffeVino"}
+	return {token: "", editable: false, name: "Eduardo", age: "27", occupation: "Product Manager", company: "CaffeVino"}
 	},
 	
-	componentDidMount: function()
+	editChange: function() {
+		$.post( "http://localhost:8080/api/myProfile", { userID: this.props.userID, token: this.props.token, name: this.state.name, age: this.state.age, occupation: this.state.occupation, company: this.state.company }, function(response){
+		console.log(response);
+		});
+	
+	},
+	editName: function(text)
 	{
-		this.refreshData();
+		this.setState({name: text.name}, function(){this.editChange()});
 		
 	},
 	
-	refreshData: function()
+	editAge: function(text)
 	{
-		var self = this;
-		$.get("http://localhost:8080/api/profile/" + this.props.index, function(data) {
-		console.log(data);
-		self.setState({name: data.name, age: data.age, occupation: data.occupation, company: data.company});
-		});
+		this.setState({age: text.age}, function(){this.editChange()});
+		
 	},
-	
-	
+	editOccupation: function(text)
+	{
+		this.setState({occupation: text.occupation}, function(){this.editChange()});
+		
+	},
+	editCompany: function(text)
+	{
+		this.setState({company: text.company}, function(){this.editChange()});
+		
+	},
 	
 	handleSubmit: function (e){
 	  var self
@@ -74,17 +85,17 @@ var ProfileComponent = React.createClass( {
 		<img src="http://drhalland.com/wp-content/uploads/2014/06/Dr-Halland-Round-Profile-Pic.png" height="128"/>
       </div>
 	  <div className="midbotname">
-	  <p>{this.state.name},</p>
+	  <InlineEdit text={this.state.name} change={this.editName} paramName="name"/>,&nbsp;
 	  </div>
 	  <div className="midbotage">
-	  <p>{this.state.age}</p>
+	  <InlineEdit text={this.state.age} change={this.editAge} paramName="age"/>
 	  </div>
 	  <div></div>
 	  <div className="midbotoccu">
-	  <p>{this.state.occupation} @ </p>
+	  <InlineEdit text={this.state.occupation} change={this.editOccupation} paramName="occupation"/> &nbsp; @ &nbsp;
 	  </div>
 	  <div className="midbotcompany">
-	  <p>{this.state.company}</p> 
+	  <InlineEdit text={this.state.company} change={this.editCompany} paramName="company"/> 
 	  </div>
 	  <div className="midbot3">
 		  <div className="midbot4">
@@ -138,4 +149,4 @@ var ProfileComponent = React.createClass( {
 	}
 });
 
-export default ProfileComponent
+export default MyProfileComponent

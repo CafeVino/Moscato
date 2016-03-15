@@ -11,6 +11,14 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+//helper methods
+//removeFromArray: function(item, array)
+//{
+//	var index = array.indexOf(item);
+//	array.splice(index, 1);
+//	return array;
+//}
+
 var mongoose   = require('mongoose');
 mongoose.connect('mongodb://moscato:testdatabase1@ds011369.mlab.com:11369/moscato', function (error) {
   // Do things once connected
@@ -22,6 +30,7 @@ mongoose.connect('mongodb://moscato:testdatabase1@ds011369.mlab.com:11369/moscat
 });// connect to our database
 var Bear     = require('./app/models/bear');
 var User     = require('./app/models/user');
+var Post     = require('./app/models/post');
 
 var port = process.env.PORT || 8080;        // set our port
 
@@ -43,9 +52,319 @@ router.get('/', function(req, res) {
 
 // more routes for our API will happen here
 
-router.route('/profile')
+router.route('/profile/:userID')
+
+    // get the profile with that id (accessed at GET http://localhost:8080/api/profile/userID)
+    .get(function(req, res) {
+        User.findById(req.params.userID, function(err, person) {
+			
+            if (err)
+                res.send(err);
+			
+			var user = new User();
+			user.name = person.name;
+			user.age = person.age;
+			user.occupation = person.occupation;
+			user.company = person.company;
+			res.header("Access-Control-Allow-Origin", "*");
+			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+			res.json(user);
+        });
+    });
+
+router.route('/myProfile/:userID/token/:token')
+
+    // get the profile with that id (accessed at GET http://localhost:8080/api/myProfile/userID/token/token)
+    .get(function(req, res) {
+        User.findById(req.params.userID, function(err, person) {
+			
+            if (err)
+                res.send(err);
+			if(req.params.token == person.token)
+			{
+				var user = new User();
+				user.name = person.name;
+				user.age = person.age;
+				user.occupation = person.occupation;
+				user.company = person.company;
+				user.posts = person.posts;
+				res.header("Access-Control-Allow-Origin", "*");
+				res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+				res.json(user);
+			}
+			else
+			{
+				res.json({message: "Invalid Token"});
+			}
+        });
+    });
 	
-    // edit user profile (accessed at POST http://localhost:8080/api/profile)
+	router.route('/post')
+	
+    // edit user profile (accessed at POST http://localhost:8080/api/post)
+    .post(function(req, res) {
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+				
+		User.findById(req.body.userIdx, function(err, person) {
+			
+            if (err)
+                res.send(err);
+			if(req.body.token == person.token)
+			{
+				var post = new Post();
+				post.userIdx = req.body.userIdx;
+				post.activity = req.body.activity;
+				post.place = req.body.place;
+				post.meet = req.body.meet;
+				post.finish = req.body.finish;
+				post.msg = req.body.msg;
+				post.save(function(err, posted) {
+				if (err)
+				{
+					res.send(err);
+					console.log(err);
+				}
+
+				res.json({ message: 'Post created!' , success: '1'});
+				console.log("Post created!");
+				var myarr = person.posts;
+				myarr.push(posted._id);
+				person.posts = myarr;
+				var myarr2 = person.seen;
+				myarr2.push(posted._id);
+				person.seen = myarr2;
+				
+				person.save(function(err, posted) {
+				if (err)
+				{
+					res.send(err);
+					console.log(err);
+				}
+				});
+				});
+				
+				
+				
+			}
+			else
+			{
+				res.json({message: "Invalid Token"});
+			}
+        });
+		
+        
+        
+    });
+	
+	
+	router.route('/postInterest')
+	
+    // edit post interest list (accessed at POST http://localhost:8080/api/postInterest)
+    .post(function(req, res) {
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+				
+		User.findById(req.body.userIdx, function(err, person) {
+			
+            if (err)
+                res.send(err);
+			if(req.body.token == person.token)
+			{
+				Post.findById(req.body.postIdx, function(err, post) {
+					if (err)
+						res.send(err);
+					var interestArray = post.interest;
+					interestArray.push(req.body.userIdx);
+					post.interest = interestArray;
+					post.save(function(err, posted) {
+					if (err)
+					{
+						res.send(err);
+						console.log(err);
+					}
+
+					res.json({ message: 'Interest added!' , success: '1'});
+					console.log("Interest added!");
+					});
+					
+				});
+				
+			}
+			else
+			{
+				res.json({message: "Invalid Token"});
+			}
+        });
+		
+        
+        
+    });
+	
+	router.route('/post/:userID/token/:token')
+	.get(function(req, res) {
+        User.findById(req.params.userID, function(err, person) {
+			res.header("Access-Control-Allow-Origin", "*");
+			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+							
+            if (err)
+                res.send(err);
+			if(req.params.token == person.token)
+			{
+				Post.find({}, function(err, docs){
+					if(err){ console.log(err);}
+					var filtered = docs.filter(function(doc) {
+						return (person.seen.indexOf(doc._id) === -1);
+					});
+					if(filtered.length != 0)
+					{
+						User.findById(filtered[0].userIdx, function(err, poster) {
+							if (err)
+								res.send(err);
+							
+							//filtered[0].userIdx = "";
+							console.log(filtered);
+							console.log(filtered[0]);
+							console.log(filtered[0]._id);
+							var seenArr = person.seen;
+							seenArr.push(filtered[0]._id);
+							var output = filtered[0].toObject();
+							output.name = poster.name;
+							output.age = poster.age;
+							output.occupation = poster.occupation;
+							output.company = poster.company;
+							person.seen = seenArr;
+							res.json(output);
+							person.save(function(err, posted) {
+							if (err)
+							{
+								res.send(err);
+								console.log(err);
+							}
+							});
+						});
+					}
+					else
+					{
+						res.json({message: "You have seen all posts"});
+					}
+				});
+				
+			}
+			else
+			{
+				res.json({message: "Invalid Token"});
+			}
+        });
+    });
+	
+	
+	router.route('/allMyPosts/:userID/token/:token')
+	.get(function(req, res) {
+        User.findById(req.params.userID, function(err, person) {
+			res.header("Access-Control-Allow-Origin", "*");
+			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+							
+            if (err)
+                res.send(err);
+			if(req.params.token == person.token)
+			{
+				Post.find({}, function(err, docs){
+					if(err){ console.log(err);}
+					var filtered = docs.filter(function(doc) {
+						return (person.posts.indexOf(doc._id) != -1);
+					});
+					if(filtered.length != 0)
+					{
+						res.send(filtered);
+						
+					}
+					else
+					{
+						res.json({message: "You have no posts"});
+					}
+				});
+				
+			}
+			else
+			{
+				res.json({message: "Invalid Token"});
+			}
+        });
+    });
+	
+router.route('/matches/:userID/token/:token/post/:post')
+	.get(function(req, res) {
+        User.findById(req.params.userID, function(err, person) {
+			res.header("Access-Control-Allow-Origin", "*");
+			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+							
+            if (err)
+                res.send(err);
+			if(req.params.token == person.token)
+			{
+				Post.findById(req.params.post, function(err, docs){
+					if(err){ console.log(err);}
+					
+					if(docs.userIdx == req.params.userID)
+					{
+						res.send(docs.interest);
+					}
+					else
+					{
+						res.json({message: "You have no matches yet"});
+					}
+				});
+				
+			}
+			else
+			{
+				res.json({message: "Invalid Token"});
+			}
+        });
+    });
+	
+	router.route('/deleteMyPost/:userID/token/:token/post/:post')
+	.get(function(req, res) {
+        User.findById(req.params.userID, function(err, person) {
+			res.header("Access-Control-Allow-Origin", "*");
+			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+							
+            if (err)
+                res.send(err);
+			if(req.params.token == person.token)
+			{
+				var posts = person.posts;
+				var index = posts.indexOf(req.params.post);
+				posts.splice(index, 1);
+				person.posts = posts;
+				person.save(function(err) {
+				if (err)
+				{
+					res.send(err);
+					console.log(err);
+				}});
+				Post.remove({
+					_id: req.params.post
+				}, function(err, post) {
+					if (err)
+						res.send(err);
+					console.log("Deleted" + post._id);
+					res.json({ message: 'Successfully deleted' });
+				});
+				
+			}
+			else
+			{
+				res.json({message: "Invalid Token"});
+			}
+        });
+    });
+
+
+router.route('/myProfile')
+	
+    // edit user profile (accessed at POST http://localhost:8080/api/myProfile)
     .post(function(req, res) {
         var user = new User();      // create a new instance of the User model
         user.userID = req.body.userID;  // set the userID (comes from the request)
@@ -97,6 +416,8 @@ router.route('/profile')
         
     })
 
+	
+
 router.route('/login')
 	
     // create a user or login (accessed at POST http://localhost:8080/api/login)
@@ -121,14 +442,14 @@ router.route('/login')
 		if(person == null)
 		{		
 			// save the user and check for errors
-			user.save(function(err) {
+			user.save(function(err, person) {
 				if (err)
 				{
 					res.send(err);
 					console.log(err);
 				}
 
-				res.json({ message: 'User created!' , stat: '1', userID: user.userID, token: user.token});
+				res.json({ message: 'User created!' , stat: '1', userID: user.userID, token: user.token, indx: person._id});
 				console.log("User created!");
 			});	
 		}
@@ -136,7 +457,7 @@ router.route('/login')
 		{
 			
 			console.log("hita");
-			res.json({ message: 'Logged In', stat: '1', userID: user.userID, token: user.token });
+			res.json({ message: 'Logged In', stat: '1', userID: user.userID, token: user.token, indx: person._id });
 			person.token = user.token;
 			person.save(function(err) {
 				if (err)

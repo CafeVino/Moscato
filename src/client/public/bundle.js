@@ -59,9 +59,29 @@
 	
 	var _LoginComponent2 = _interopRequireDefault(_LoginComponent);
 	
+	var _MyProfileComponent = __webpack_require__(/*! ./MyProfileComponent.jsx */ 165);
+	
+	var _MyProfileComponent2 = _interopRequireDefault(_MyProfileComponent);
+	
+	var _NewPostComponent = __webpack_require__(/*! ./NewPostComponent.jsx */ 163);
+	
+	var _NewPostComponent2 = _interopRequireDefault(_NewPostComponent);
+	
+	var _BrowseComponent = __webpack_require__(/*! ./BrowseComponent.jsx */ 164);
+	
+	var _BrowseComponent2 = _interopRequireDefault(_BrowseComponent);
+	
+	var _MyPostsComponent = __webpack_require__(/*! ./MyPostsComponent.jsx */ 166);
+	
+	var _MyPostsComponent2 = _interopRequireDefault(_MyPostsComponent);
+	
 	var _ProfileComponent = __webpack_require__(/*! ./ProfileComponent.jsx */ 161);
 	
 	var _ProfileComponent2 = _interopRequireDefault(_ProfileComponent);
+	
+	var _MyMatchesComponent = __webpack_require__(/*! ./MyMatchesComponent.jsx */ 167);
+	
+	var _MyMatchesComponent2 = _interopRequireDefault(_MyMatchesComponent);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -70,11 +90,19 @@
 	
 	
 		getInitialState: function getInitialState() {
-			return { userID: "", token: "", loggedIn: "" };
+			return { userID: "", token: "", loggedIn: "", index: "", profile: "", post: "" };
 		},
 	
-		stateChanged: function stateChanged(_userID, _token, _loggedIn) {
-			this.setState({ userID: _userID, token: _token, loggedIn: _loggedIn });
+		loginCallback: function loginCallback(_userID, _token, _loggedIn, _index) {
+			this.setState({ userID: _userID, token: _token, loggedIn: _loggedIn, index: _index });
+		},
+	
+		profileRequested: function profileRequested(_profile) {
+			this.setState({ profile: _profile });
+		},
+	
+		postRequested: function postRequested(_post) {
+			this.setState({ post: _post });
 		},
 	
 		render: function render() {
@@ -83,14 +111,61 @@
 				return _react2.default.createElement(
 					'div',
 					null,
-					_react2.default.createElement(_LoginComponent2.default, { stateChanged: this.stateChanged })
+					_react2.default.createElement(_LoginComponent2.default, { stateChanged: this.loginCallback })
 				);
 			} else if (this.state.loggedIn == "1") {
-				return _react2.default.createElement(
-					'div',
-					null,
-					_react2.default.createElement(_ProfileComponent2.default, { userID: this.state.userID, token: this.state.token })
-				);
+				if (this.state.profile == "") {
+					if (this.state.post == "") {
+						if (false) {
+							return _react2.default.createElement(
+								'div',
+								null,
+								_react2.default.createElement(_MyPostsComponent2.default, { userID: this.state.userID, postRequested: this.postRequested, token: this.state.token, index: this.state.index })
+							);
+						}
+						if (true) {
+							return _react2.default.createElement(
+								'div',
+								null,
+								_react2.default.createElement(_BrowseComponent2.default, { userID: this.state.userID, profileRequested: this.profileRequested, token: this.state.token, index: this.state.index })
+							);
+						}
+						if (false) {
+							return _react2.default.createElement(
+								'div',
+								null,
+								_react2.default.createElement(_MyProfileComponent2.default, { userID: this.state.userID, token: this.state.token, index: this.state.index })
+							);
+						}
+						if (false) {
+							return _react2.default.createElement(
+								'div',
+								null,
+								_react2.default.createElement(_NewPostComponent2.default, { userID: this.state.userID, token: this.state.token, index: this.state.index })
+							);
+						}
+	
+						if (false) {
+							return _react2.default.createElement(
+								'div',
+								null,
+								_react2.default.createElement(_MyProfileComponent2.default, { userID: this.state.userID, token: this.state.token, index: this.state.index })
+							);
+						}
+					} else {
+						return _react2.default.createElement(
+							'div',
+							null,
+							_react2.default.createElement(_MyMatchesComponent2.default, { userID: this.state.userID, post: this.state.post, token: this.state.token, index: this.state.index })
+						);
+					}
+				} else {
+					return _react2.default.createElement(
+						'div',
+						null,
+						_react2.default.createElement(_ProfileComponent2.default, { userID: this.state.userID, token: this.state.token, index: this.state.profile })
+					);
+				}
 			}
 		}
 	});
@@ -20182,7 +20257,7 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	    value: true
 	});
 	
 	var _react = __webpack_require__(/*! react */ 1);
@@ -20198,96 +20273,92 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var LoginComponent = _react2.default.createClass({
-		displayName: 'LoginComponent',
+	    displayName: 'LoginComponent',
 	
 	
-		getInitialState: function getInitialState() {
-			return { userID: "", pass: "", loggedIn: "", token: "" };
-		},
+	    getInitialState: function getInitialState() {
+	        return { userID: "", pass: "", loggedInStatus: "" };
+	    },
 	
-		postCallBack: function postCallBack(_response) {
-			this.props.stateChanged(_response.userID, _response.token, _response.stat);
-		},
-		handleSubmit: function handleSubmit(e) {
-			var self;
+	    loginCallBack: function loginCallBack(response) {
+	        this.setState({ loggedInStatus: response.stat });
+	        this.props.loginCallback(response.userID, response.token, response.stat, response.indx);
+	    },
+	    handleSubmit: function handleSubmit(e) {
+	        var self;
+	        e.preventDefault();
+	        self = this;
 	
-			e.preventDefault();
-			self = this;
+	        $.post("http://localhost:8080/api/login", {
+	            userID: this.state.userID,
+	            pass: this.state.pass
+	        }, function (response) {
+	            console.log(response);
+	            self.loginCallBack(response);
+	        });
+	    },
+	    userIDChange: function userIDChange(e) {
+	        this.setState({
+	            userID: e.target.value
+	        });
+	    },
+	    passChange: function passChange(e) {
+	        this.setState({
+	            pass: e.target.value
+	        });
+	    },
 	
-			var body = {
-				userID: this.state.userID,
-				pass: this.state.pass
-			};
+	    render: function render() {
 	
-			var _response = {};
-	
-			$.post("http://localhost:8080/api/login", { userID: this.state.userID, pass: this.state.pass }, function (response) {
-				console.log(response);
-				self.postCallBack(response);
-			});
-		},
-		userIDChange: function userIDChange(e) {
-			this.setState({
-				userID: e.target.value
-			});
-		},
-		passChange: function passChange(e) {
-			this.setState({
-				pass: e.target.value
-			});
-		},
-	
-		render: function render() {
-	
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement(
-					'div',
-					{ className: 'jumbot' },
-					_react2.default.createElement('img', { src: 'http://icons.iconarchive.com/icons/graphicloads/food-drink/128/grapes-icon.png' })
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'jumbot2' },
-					_react2.default.createElement(
-						'p',
-						null,
-						'Moscato'
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'jumbot3' },
-					_react2.default.createElement(
-						'form',
-						{ className: 'login-box', onSubmit: this.handleSubmit },
-						_react2.default.createElement(
-							'label',
-							null,
-							'Username'
-						),
-						_react2.default.createElement('br', null),
-						_react2.default.createElement('input', { type: 'text', id: 'username', onChange: this.userIDChange, value: this.state.userID }),
-						_react2.default.createElement('br', null),
-						_react2.default.createElement(
-							'label',
-							null,
-							'Password'
-						),
-						_react2.default.createElement('br', null),
-						_react2.default.createElement('input', { type: 'password', id: 'password', onChange: this.passChange, value: this.state.pass }),
-						_react2.default.createElement('br', null),
-						_react2.default.createElement(
-							'button',
-							{ type: 'submit' },
-							'Sign In'
-						),
-						_react2.default.createElement('br', null)
-					)
-				)
-			);
-		}
+	        return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(
+	                'div',
+	                { className: 'jumbot' },
+	                _react2.default.createElement('img', { src: 'http://icons.iconarchive.com/icons/graphicloads/food-drink/128/grapes-icon.png' })
+	            ),
+	            _react2.default.createElement(
+	                'div',
+	                { className: 'jumbot2' },
+	                _react2.default.createElement(
+	                    'p',
+	                    null,
+	                    'Moscato'
+	                )
+	            ),
+	            _react2.default.createElement(
+	                'div',
+	                { className: 'jumbot3' },
+	                _react2.default.createElement(
+	                    'form',
+	                    { className: 'login-box', onSubmit: this.handleSubmit },
+	                    _react2.default.createElement(
+	                        'label',
+	                        null,
+	                        'Username'
+	                    ),
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement('input', { type: 'text', id: 'username', onChange: this.userIDChange, value: this.state.userID }),
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement(
+	                        'label',
+	                        null,
+	                        'Password'
+	                    ),
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement('input', { type: 'password', id: 'password', onChange: this.passChange, value: this.state.pass }),
+	                    _react2.default.createElement('br', null),
+	                    _react2.default.createElement(
+	                        'button',
+	                        { type: 'submit' },
+	                        'Sign In'
+	                    ),
+	                    _react2.default.createElement('br', null)
+	                )
+	            )
+	        );
+	    }
 	});
 	
 	exports.default = LoginComponent;
@@ -20402,33 +20473,18 @@
 	
 	
 		getInitialState: function getInitialState() {
-			return { token: "", editable: false, name: "Eduardo", age: "27", occupation: "Product Manager", company: "CaffeVino" };
+			return { name: "Eduardo", age: "27", occupation: "Product Manager", company: "CaffeVino" };
 		},
 	
-		editChange: function editChange() {
-			$.post("http://localhost:8080/api/profile", { userID: this.props.userID, token: this.props.token, name: this.state.name, age: this.state.age, occupation: this.state.occupation, company: this.state.company }, function (response) {
-				console.log(response);
-			});
-		},
-		editName: function editName(text) {
-			this.setState({ name: text.name }, function () {
-				this.editChange();
-			});
+		componentDidMount: function componentDidMount() {
+			this.refreshData();
 		},
 	
-		editAge: function editAge(text) {
-			this.setState({ age: text.age }, function () {
-				this.editChange();
-			});
-		},
-		editOccupation: function editOccupation(text) {
-			this.setState({ occupation: text.occupation }, function () {
-				this.editChange();
-			});
-		},
-		editCompany: function editCompany(text) {
-			this.setState({ company: text.company }, function () {
-				this.editChange();
+		refreshData: function refreshData() {
+			var self = this;
+			$.get("http://localhost:8080/api/profile/" + this.props.index, function (data) {
+				console.log(data);
+				self.setState({ name: data.name, age: data.age, occupation: data.occupation, company: data.company });
 			});
 		},
 	
@@ -20451,7 +20507,7 @@
 				console.log(response);
 				_response = response;
 			});
-			this.props.stateChanged(_response.userID, _response.token, _response.loggedIn);
+			this.props.loginCallback(_response.userID, _response.token, _response.loggedIn);
 		},
 		userIDChange: function userIDChange(e) {
 			this.setState({
@@ -20481,25 +20537,41 @@
 				_react2.default.createElement(
 					'div',
 					{ className: 'midbotname' },
-					_react2.default.createElement(_reactEditInline2.default, { text: this.state.name, change: this.editName, paramName: 'name' }),
-					', '
+					_react2.default.createElement(
+						'p',
+						null,
+						this.state.name,
+						','
+					)
 				),
 				_react2.default.createElement(
 					'div',
 					{ className: 'midbotage' },
-					_react2.default.createElement(_reactEditInline2.default, { text: this.state.age, change: this.editAge, paramName: 'age' })
+					_react2.default.createElement(
+						'p',
+						null,
+						this.state.age
+					)
 				),
 				_react2.default.createElement('div', null),
 				_react2.default.createElement(
 					'div',
 					{ className: 'midbotoccu' },
-					_react2.default.createElement(_reactEditInline2.default, { text: this.state.occupation, change: this.editOccupation, paramName: 'occupation' }),
-					'   @  '
+					_react2.default.createElement(
+						'p',
+						null,
+						this.state.occupation,
+						' @ '
+					)
 				),
 				_react2.default.createElement(
 					'div',
 					{ className: 'midbotcompany' },
-					_react2.default.createElement(_reactEditInline2.default, { text: this.state.company, change: this.editCompany, paramName: 'company' })
+					_react2.default.createElement(
+						'p',
+						null,
+						this.state.company
+					)
 				),
 				_react2.default.createElement(
 					'div',
@@ -20807,6 +20879,1035 @@
 	};
 	exports.default = InlineEdit;
 
+
+/***/ },
+/* 163 */
+/*!*********************************************!*\
+  !*** ./src/client/app/NewPostComponent.jsx ***!
+  \*********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 158);
+	
+	var _AwesomeComponent = __webpack_require__(/*! ./AwesomeComponent.jsx */ 160);
+	
+	var _AwesomeComponent2 = _interopRequireDefault(_AwesomeComponent);
+	
+	var _reactEditInline = __webpack_require__(/*! react-edit-inline */ 162);
+	
+	var _reactEditInline2 = _interopRequireDefault(_reactEditInline);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var NewPostComponent = _react2.default.createClass({
+		displayName: 'NewPostComponent',
+	
+	
+		getInitialState: function getInitialState() {
+			return { token: "", name: "Eduardo", age: "27", occupation: "Product Manager", company: "CaffeVino", activity: "Grab Beers", place: "SOHO", meet: "10:00 PM - 11:00 PM", finish: "Whenever", msg: "Just got off work and feeling social! Let's grab some drinks at O'Tooles! I'll get first round!" };
+		},
+	
+		componentDidMount: function componentDidMount() {
+			var self = this;
+			$.get("http://localhost:8080/api/myProfile/" + this.props.index + "/token/" + this.props.token, function (data) {
+				console.log(data);
+				self.setState({ name: data.name, age: data.age, occupation: data.occupation, company: data.company });
+			});
+		},
+	
+		editChange: function editChange() {
+			$.post("http://localhost:8080/api/post", { token: this.props.token, userIdx: this.props.index, activity: this.state.activity, place: this.state.place, meet: this.state.meet, finish: this.state.finish, msg: this.state.msg }, function (response) {
+				console.log(response);
+			});
+		},
+		editActivity: function editActivity(text) {
+			this.setState({ activity: text.activity });
+		},
+		editPlace: function editPlace(text) {
+			this.setState({ place: text.place });
+		},
+		editMeet: function editMeet(text) {
+			this.setState({ meet: text.meet });
+		},
+		editFinish: function editFinish(text) {
+			this.setState({ finish: text.finish });
+		},
+		editMsg: function editMsg(text) {
+			this.setState({ msg: text.msg });
+		},
+	
+		editCompany: function editCompany(text) {
+			this.setState({ company: text.company }, function () {
+				this.editChange();
+			});
+		},
+	
+		handleSubmit: function handleSubmit(e) {
+			var self;
+	
+			e.preventDefault();
+			self = this;
+	
+			console.log(this.state);
+	
+			var body = {
+				userID: this.state.userID,
+				pass: this.state.pass
+			};
+	
+			var _response = {};
+	
+			$.post("http://localhost:8080/api/login", { userID: this.state.userID, pass: this.state.pass }, function (response) {
+				console.log(response);
+				_response = response;
+			});
+			this.props.loginCallback(_response.userID, _response.token, _response.loggedIn);
+		},
+		userIDChange: function userIDChange(e) {
+			this.setState({
+				userID: e.target.value
+			});
+		},
+		passChange: function passChange(e) {
+			this.setState({
+				pass: e.target.value
+			});
+		},
+	
+		render: function render() {
+	
+			var divImage = {
+				backgroundImage: "url(http://cdn.bigbangfish.com/beautiful/beautiful-beaches/beautiful-beaches-2.jpg)", backgroundSize: "cover"
+			};
+	
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbotpost', style: divImage },
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotactivity' },
+						_react2.default.createElement(_reactEditInline2.default, { text: this.state.activity, change: this.editActivity, paramName: 'activity' })
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotat' },
+						_react2.default.createElement(
+							'p',
+							null,
+							'@'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotlocation' },
+						_react2.default.createElement(_reactEditInline2.default, { text: this.state.place, change: this.editPlace, paramName: 'place' })
+					),
+					_react2.default.createElement('div', null),
+					_react2.default.createElement('img', { src: 'http://drhalland.com/wp-content/uploads/2014/06/Dr-Halland-Round-Profile-Pic.png', height: '128' })
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot3' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotnamepost' },
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.name + ", " + this.state.age
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4time' },
+						_react2.default.createElement(
+							'p',
+							null,
+							'Meet @ ',
+							_react2.default.createElement(_reactEditInline2.default, { text: this.state.meet, change: this.editMeet, paramName: 'meet' }),
+							' '
+						),
+						_react2.default.createElement(
+							'p',
+							null,
+							'Finish @ ',
+							_react2.default.createElement(_reactEditInline2.default, { text: this.state.finish, change: this.editFinish, paramName: 'finish' }),
+							' '
+						)
+					),
+					_react2.default.createElement('div', null),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4half' },
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.occupation + " @ " + this.state.company
+						)
+					),
+					_react2.default.createElement('div', null),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4half' },
+						_react2.default.createElement(_reactEditInline2.default, { text: this.state.msg, change: this.editMsg, paramName: 'msg' })
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4half', style: { textAlign: "right" } },
+						_react2.default.createElement('img', { onClick: this.editChange, src: 'https://cdn2.iconfinder.com/data/icons/flatte-social-networks-part-2/80/11_-_Pushpin-512.png', height: '128' })
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot2' },
+					_react2.default.createElement(
+						'ul',
+						{ className: 'navi' },
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/profile_318-40185.png', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/user-profiles-in-connection_318-47860.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/upload-cloud_318-84457.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/multiple-user-profile-images_318-36861.jpg', height: '56' })
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot3' },
+					_react2.default.createElement(
+						'form',
+						{ className: 'login-box', onSubmit: this.handleSubmit },
+						_react2.default.createElement(
+							'label',
+							null,
+							'Username'
+						),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement('input', { type: 'text', id: 'username', onChange: this.userIDChange, value: this.state.userID }),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement(
+							'label',
+							null,
+							'Password'
+						),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement('input', { type: 'password', id: 'password', onChange: this.passChange, value: this.state.pass }),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement(
+							'button',
+							{ type: 'submit' },
+							'Sign In'
+						),
+						_react2.default.createElement('br', null)
+					)
+				)
+			);
+		}
+	});
+	
+	exports.default = NewPostComponent;
+
+/***/ },
+/* 164 */
+/*!********************************************!*\
+  !*** ./src/client/app/BrowseComponent.jsx ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 158);
+	
+	var _AwesomeComponent = __webpack_require__(/*! ./AwesomeComponent.jsx */ 160);
+	
+	var _AwesomeComponent2 = _interopRequireDefault(_AwesomeComponent);
+	
+	var _reactEditInline = __webpack_require__(/*! react-edit-inline */ 162);
+	
+	var _reactEditInline2 = _interopRequireDefault(_reactEditInline);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var BrowseComponent = _react2.default.createClass({
+		displayName: 'BrowseComponent',
+	
+	
+		getInitialState: function getInitialState() {
+			return { userIdx: "", postIdx: "", name: "Eduardo", age: "27", occupation: "Product Manager", company: "CaffeVino", activity: "Grab Beers", place: "SOHO", meet: "10:00 PM - 11:00 PM", finish: "Whenever", msg: "Just got off work and feeling social! Let's grab some drinks at O'Tooles! I'll get first round!" };
+		},
+	
+		componentDidMount: function componentDidMount() {
+			this.refreshData();
+		},
+	
+		refreshData: function refreshData() {
+			var self = this;
+			$.get("http://localhost:8080/api/post/" + this.props.index + "/token/" + this.props.token, function (data) {
+				console.log(data);
+				self.setState({ userIdx: data.userIdx, postIdx: data._id, name: data.name, age: data.age, occupation: data.occupation, company: data.company, activity: data.activity, place: data.place, meet: data.meet, finish: data.finish, msg: data.msg });
+			});
+		},
+	
+		showProfile: function showProfile() {
+			this.props.profileRequested(this.state.userIdx);
+		},
+	
+		postInterest: function postInterest() {
+			$.post("http://localhost:8080/api/postInterest", { token: this.props.token, userIdx: this.props.index, postIdx: this.state.postIdx }, function (response) {
+				console.log(response);
+			});
+			this.refreshData();
+		},
+	
+		render: function render() {
+	
+			var divImage = {
+				backgroundImage: "url(http://cdn.bigbangfish.com/beautiful/beautiful-beaches/beautiful-beaches-2.jpg)", backgroundSize: "cover"
+			};
+	
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbotpost', style: divImage },
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotactivity' },
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.activity
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotat' },
+						_react2.default.createElement(
+							'p',
+							null,
+							'@'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotlocation' },
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.place,
+							' '
+						)
+					),
+					_react2.default.createElement('div', null),
+					_react2.default.createElement('img', { onClick: this.showProfile, src: 'http://drhalland.com/wp-content/uploads/2014/06/Dr-Halland-Round-Profile-Pic.png', height: '128' })
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot3' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotnamepost' },
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.name + ", " + this.state.age
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4time' },
+						_react2.default.createElement(
+							'p',
+							null,
+							'Meet @ ',
+							this.state.meet
+						),
+						_react2.default.createElement(
+							'p',
+							null,
+							'Finish @ ',
+							this.state.finish
+						)
+					),
+					_react2.default.createElement('div', null),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4half' },
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.occupation + " @ " + this.state.company
+						)
+					),
+					_react2.default.createElement('div', null),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4half' },
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.msg,
+							' '
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4half', style: { textAlign: "right" } },
+						_react2.default.createElement('img', { onClick: this.refreshData, src: 'https://cdn1.iconfinder.com/data/icons/basic-ui-elements-color/700/010_x-128.png', height: '128' }),
+						_react2.default.createElement('img', { onClick: this.postInterest, src: 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678134-sign-check-128.png', height: '128' })
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot2' },
+					_react2.default.createElement(
+						'ul',
+						{ className: 'navi' },
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/profile_318-40185.png', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/user-profiles-in-connection_318-47860.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/upload-cloud_318-84457.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/multiple-user-profile-images_318-36861.jpg', height: '56' })
+						)
+					)
+				)
+			);
+		}
+	});
+	
+	exports.default = BrowseComponent;
+
+/***/ },
+/* 165 */
+/*!***********************************************!*\
+  !*** ./src/client/app/MyProfileComponent.jsx ***!
+  \***********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 158);
+	
+	var _AwesomeComponent = __webpack_require__(/*! ./AwesomeComponent.jsx */ 160);
+	
+	var _AwesomeComponent2 = _interopRequireDefault(_AwesomeComponent);
+	
+	var _reactEditInline = __webpack_require__(/*! react-edit-inline */ 162);
+	
+	var _reactEditInline2 = _interopRequireDefault(_reactEditInline);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var MyProfileComponent = _react2.default.createClass({
+		displayName: 'MyProfileComponent',
+	
+	
+		getInitialState: function getInitialState() {
+			return { token: "", editable: false, name: "Eduardo", age: "27", occupation: "Product Manager", company: "CaffeVino" };
+		},
+	
+		editChange: function editChange() {
+			$.post("http://localhost:8080/api/myProfile", { userID: this.props.userID, token: this.props.token, name: this.state.name, age: this.state.age, occupation: this.state.occupation, company: this.state.company }, function (response) {
+				console.log(response);
+			});
+		},
+		editName: function editName(text) {
+			this.setState({ name: text.name }, function () {
+				this.editChange();
+			});
+		},
+	
+		editAge: function editAge(text) {
+			this.setState({ age: text.age }, function () {
+				this.editChange();
+			});
+		},
+		editOccupation: function editOccupation(text) {
+			this.setState({ occupation: text.occupation }, function () {
+				this.editChange();
+			});
+		},
+		editCompany: function editCompany(text) {
+			this.setState({ company: text.company }, function () {
+				this.editChange();
+			});
+		},
+	
+		handleSubmit: function handleSubmit(e) {
+			var self;
+	
+			e.preventDefault();
+			self = this;
+	
+			console.log(this.state);
+	
+			var body = {
+				userID: this.state.userID,
+				pass: this.state.pass
+			};
+	
+			var _response = {};
+	
+			$.post("http://localhost:8080/api/login", { userID: this.state.userID, pass: this.state.pass }, function (response) {
+				console.log(response);
+				_response = response;
+			});
+			this.props.loginCallback(_response.userID, _response.token, _response.loggedIn);
+		},
+		userIDChange: function userIDChange(e) {
+			this.setState({
+				userID: e.target.value
+			});
+		},
+		passChange: function passChange(e) {
+			this.setState({
+				pass: e.target.value
+			});
+		},
+	
+		render: function render() {
+	
+			var divImage = {
+				backgroundImage: "url(http://cdn.bigbangfish.com/beautiful/beautiful-beaches/beautiful-beaches-2.jpg)", backgroundSize: "cover"
+			};
+	
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot4', style: divImage },
+					_react2.default.createElement('img', { src: 'http://drhalland.com/wp-content/uploads/2014/06/Dr-Halland-Round-Profile-Pic.png', height: '128' })
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbotname' },
+					_react2.default.createElement(_reactEditInline2.default, { text: this.state.name, change: this.editName, paramName: 'name' }),
+					', '
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbotage' },
+					_react2.default.createElement(_reactEditInline2.default, { text: this.state.age, change: this.editAge, paramName: 'age' })
+				),
+				_react2.default.createElement('div', null),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbotoccu' },
+					_react2.default.createElement(_reactEditInline2.default, { text: this.state.occupation, change: this.editOccupation, paramName: 'occupation' }),
+					'   @  '
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbotcompany' },
+					_react2.default.createElement(_reactEditInline2.default, { text: this.state.company, change: this.editCompany, paramName: 'company' })
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot3' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4' },
+						_react2.default.createElement(
+							'p',
+							null,
+							'Interests/Hobbies'
+						),
+						_react2.default.createElement(
+							'ul',
+							null,
+							_react2.default.createElement(
+								'li',
+								null,
+								'Eating out'
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								'Hiking'
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								'Meeting new people'
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4' },
+						_react2.default.createElement(
+							'p',
+							null,
+							'Goals/Aspirations'
+						),
+						_react2.default.createElement(
+							'ul',
+							null,
+							_react2.default.createElement(
+								'li',
+								null,
+								'Get my pilots license'
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								'Create a startup'
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								'Travel'
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbot4' },
+						_react2.default.createElement(
+							'p',
+							null,
+							'About Me'
+						),
+						_react2.default.createElement(
+							'p',
+							{ style: { fontSize: "14" } },
+							'Hello! My name is Eduardo and I love meeting new people, trying new things, and just hanging out! I like craft beers and wine and just want to enjoy life!'
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot2' },
+					_react2.default.createElement(
+						'ul',
+						{ className: 'navi' },
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/profile_318-40185.png', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/user-profiles-in-connection_318-47860.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/upload-cloud_318-84457.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/multiple-user-profile-images_318-36861.jpg', height: '56' })
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbot3' },
+					_react2.default.createElement(
+						'form',
+						{ className: 'login-box', onSubmit: this.handleSubmit },
+						_react2.default.createElement(
+							'label',
+							null,
+							'Username'
+						),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement('input', { type: 'text', id: 'username', onChange: this.userIDChange, value: this.state.userID }),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement(
+							'label',
+							null,
+							'Password'
+						),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement('input', { type: 'password', id: 'password', onChange: this.passChange, value: this.state.pass }),
+						_react2.default.createElement('br', null),
+						_react2.default.createElement(
+							'button',
+							{ type: 'submit' },
+							'Sign In'
+						),
+						_react2.default.createElement('br', null)
+					)
+				)
+			);
+		}
+	});
+	
+	exports.default = MyProfileComponent;
+
+/***/ },
+/* 166 */
+/*!*********************************************!*\
+  !*** ./src/client/app/MyPostsComponent.jsx ***!
+  \*********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 158);
+	
+	var _AwesomeComponent = __webpack_require__(/*! ./AwesomeComponent.jsx */ 160);
+	
+	var _AwesomeComponent2 = _interopRequireDefault(_AwesomeComponent);
+	
+	var _reactEditInline = __webpack_require__(/*! react-edit-inline */ 162);
+	
+	var _reactEditInline2 = _interopRequireDefault(_reactEditInline);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var MyPostsComponent = _react2.default.createClass({
+		displayName: 'MyPostsComponent',
+	
+	
+		getInitialState: function getInitialState() {
+			return { posts: [] };
+		},
+	
+		componentDidMount: function componentDidMount() {
+			this.refreshData();
+		},
+	
+		refreshData: function refreshData() {
+			var self = this;
+			$.get("http://localhost:8080/api/allMyPosts/" + this.props.index + "/token/" + this.props.token, function (data) {
+				console.log(data);
+				self.setState({ posts: data });
+			});
+		},
+		postInterest: function postInterest(post) {
+			this.props.postRequested(post);
+		},
+		deletePost: function deletePost(post) {
+			console.log(post);
+			var self = this;
+			$.get("http://localhost:8080/api/deleteMyPost/" + this.props.index + "/token/" + this.props.token + "/post/" + post, function (data) {
+				self.refreshData();
+			});
+		},
+	
+		render: function render() {
+	
+			var postList = [];
+			for (var i = 0; i < this.state.posts.length; i++) {
+				postList.push(_react2.default.createElement(
+					'div',
+					{ key: i },
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotactivity', style: { fontSize: "20" } },
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.posts[i].activity
+						),
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.posts[i].place
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotlocation', style: { fontSize: "20" } },
+						_react2.default.createElement(
+							'p',
+							null,
+							'Meet @ ',
+							this.state.posts[i].meet
+						),
+						_react2.default.createElement(
+							'p',
+							null,
+							'Finish @ ',
+							this.state.posts[i].finish
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotat' },
+						_react2.default.createElement(
+							'p',
+							null,
+							_react2.default.createElement('img', { onClick: this.deletePost.bind(this, this.state.posts[i]._id), src: 'https://cdn1.iconfinder.com/data/icons/basic-ui-elements-color/700/010_x-128.png', height: '28' })
+						),
+						_react2.default.createElement(
+							'p',
+							null,
+							_react2.default.createElement('img', { onClick: this.postInterest.bind(this, this.state.posts[i]._id), src: 'https://t1.ftcdn.net/jpg/00/99/98/24/160_F_99982418_Xr1piIZgFyDaOJkxvBFYkfXUcQ36O31l.jpg', height: '28' })
+						)
+					),
+					_react2.default.createElement('div', null)
+				));
+			}
+	
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbotpost' },
+					postList
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot2' },
+					_react2.default.createElement(
+						'ul',
+						{ className: 'navi' },
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/profile_318-40185.png', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/user-profiles-in-connection_318-47860.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/upload-cloud_318-84457.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/multiple-user-profile-images_318-36861.jpg', height: '56' })
+						)
+					)
+				)
+			);
+		}
+	});
+	
+	exports.default = MyPostsComponent;
+
+/***/ },
+/* 167 */
+/*!***********************************************!*\
+  !*** ./src/client/app/MyMatchesComponent.jsx ***!
+  \***********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 158);
+	
+	var _AwesomeComponent = __webpack_require__(/*! ./AwesomeComponent.jsx */ 160);
+	
+	var _AwesomeComponent2 = _interopRequireDefault(_AwesomeComponent);
+	
+	var _reactEditInline = __webpack_require__(/*! react-edit-inline */ 162);
+	
+	var _reactEditInline2 = _interopRequireDefault(_reactEditInline);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var MyPostsComponent = _react2.default.createClass({
+		displayName: 'MyPostsComponent',
+	
+	
+		getInitialState: function getInitialState() {
+			return { posts: [], users: [] };
+		},
+	
+		componentDidMount: function componentDidMount() {
+			this.refreshData();
+		},
+	
+		refreshData: function refreshData() {
+			var self = this;
+			$.get("http://localhost:8080/api/matches/" + this.props.index + "/token/" + this.props.token + "/post/" + this.props.post, function (data) {
+				console.log(data);
+				self.setState({ posts: data });
+				for (var i = 0; i < self.state.posts.length; i++) {
+					$.get("http://localhost:8080/api/profile/" + self.state.posts[i], function (udata) {
+						var myvar = self.state.users;
+						myvar.push(udata);
+						self.setState({ users: myvar });
+					});
+				}
+			});
+		},
+	
+		deletePost: function deletePost(post) {
+			console.log(post);
+			var self = this;
+			$.get("http://localhost:8080/api/deleteMyPost/" + this.props.index + "/token/" + this.props.token + "/post/" + post, function (data) {
+				self.refreshData();
+			});
+		},
+	
+		render: function render() {
+	
+			console.log(this.state.users);
+			var userList = [];
+			for (var i = 0; i < this.state.users.length; i++) {
+	
+				userList.push(_react2.default.createElement(
+					'div',
+					{ key: i },
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotactivity', style: { fontSize: "20" } },
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.users[i].name,
+							', ',
+							this.state.users[i].age
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotlocation', style: { fontSize: "20" } },
+						_react2.default.createElement(
+							'p',
+							null,
+							this.state.users[i].occupation,
+							' @ ',
+							this.state.users[i].company
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'midbotat' },
+						_react2.default.createElement(
+							'p',
+							null,
+							_react2.default.createElement('img', { src: 'https://cdn1.iconfinder.com/data/icons/basic-ui-elements-color/700/010_x-128.png', height: '28' })
+						),
+						_react2.default.createElement(
+							'p',
+							null,
+							_react2.default.createElement('img', { src: 'https://t1.ftcdn.net/jpg/00/99/98/24/160_F_99982418_Xr1piIZgFyDaOJkxvBFYkfXUcQ36O31l.jpg', height: '28' })
+						)
+					),
+					_react2.default.createElement('div', null)
+				));
+			}
+	
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'jumbotpost' },
+					userList
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'midbot2' },
+					_react2.default.createElement(
+						'ul',
+						{ className: 'navi' },
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/profile_318-40185.png', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/user-profiles-in-connection_318-47860.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/upload-cloud_318-84457.jpg', height: '56' })
+						),
+						_react2.default.createElement(
+							'li',
+							{ className: 'navi' },
+							_react2.default.createElement('img', { src: 'https://image.freepik.com/free-icon/multiple-user-profile-images_318-36861.jpg', height: '56' })
+						)
+					)
+				)
+			);
+		}
+	});
+	
+	exports.default = MyPostsComponent;
 
 /***/ }
 /******/ ]);

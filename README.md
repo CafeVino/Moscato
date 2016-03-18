@@ -44,3 +44,19 @@ http://stackoverflow.com/questions/34593434/auth-failed-code-18-when-connecting-
 Note that if you have CORS disabled and are running nodejs and client locally, the client will not be able to access post responses.
 http://enable-cors.org/server_expressjs.html
 
+Some tips on using socket io:
+https://www.codecourse.com/forum/topics/nodejs-real-time-chat-private-messaging-integration/351
+http://socket.io/docs/rooms-and-namespaces/#
+http://stackoverflow.com/questions/26644990/socket-io-clients-to-receive-offline-messages-when-coming-back
+
+Some tips using express:
+http://expressjs.com/en/starter/static-files.html
+https://scotch.io/tutorials/learn-to-use-the-new-router-in-expressjs-4
+
+Openshift tips:
+https://blog.openshift.com/run-your-nodejs-projects-on-openshift-in-two-simple-steps/
+https://developers.openshift.com/en/managing-log-files.html
+https://developers.openshift.com/en/node-js-project-structure.html#package.json
+
+Tips using git:
+http://rogerdudler.github.io/git-guide/

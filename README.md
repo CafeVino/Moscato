@@ -83,3 +83,5 @@ http://rogerdudler.github.io/git-guide/
 Endpoints:
 http://rumble-caffevino.rhcloud.com/api/
 http://moscato-caffevino.rhcloud.com/api/
+
+Chrome's Postman is pretty good to use to send some api calls for testing

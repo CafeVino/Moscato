@@ -57,6 +57,24 @@ Openshift tips:
 https://blog.openshift.com/run-your-nodejs-projects-on-openshift-in-two-simple-steps/
 https://developers.openshift.com/en/managing-log-files.html
 https://developers.openshift.com/en/node-js-project-structure.html#package.json
+1. Create an openshift application with node 0.10
+2. Create a new workspace directory on your computer.
+3. Open git bash and cd to the new workspace directory you just created
+4. git clone ssh://somenumbers@rumble-caffevino.rhcloud.com/~/git/rumble.git/
+5. cd rumble/
+6. rename server.js to server.js_bak 
+7. Copy in from your local project folders the server.js, app/models/, and node_modules that you will be using
+8. Edit package.json to contain 
+  "dependencies": {
+		"express": "~4.0.0",
+        "mongoose": "~4.1.11",
+        "body-parser": "~1.0.1",
+		"socket.io": "~1.4.5"
+  },
+9. git add .
+10. git commit -m 'My changes'
+11. git push
+
 
 Tips using git:
 http://rogerdudler.github.io/git-guide/

@@ -79,3 +79,7 @@ https://developers.openshift.com/en/node-js-project-structure.html#package.json
 
 Tips using git:
 http://rogerdudler.github.io/git-guide/
+
+Endpoints:
+http://rumble-caffevino.rhcloud.com/api/
+http://moscato-caffevino.rhcloud.com/api/

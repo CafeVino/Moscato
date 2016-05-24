@@ -74,6 +74,7 @@ https://developers.openshift.com/en/node-js-project-structure.html#package.json
 9. git add .
 10. git commit -m 'My changes'
 11. git push
+12. use rhc tail -a myapp to view nodejs console
 
 
 Tips using git:

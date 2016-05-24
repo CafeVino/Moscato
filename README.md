@@ -85,3 +85,155 @@ http://rumble-caffevino.rhcloud.com/api/
 http://moscato-caffevino.rhcloud.com/api/
 
 Chrome's Postman is pretty good to use to send some api calls for testing
+
+
+
+=========================================================================
+Rumble Api Info:
+http://rumble-caffevino.rhcloud.com/api
+
+GET /
+json
+	message
+
+POST /login/: userID, pass
+json
+	message, loggedInStatus (0 error, 1 created + loggedin, 2 logged in, -1 incorrect password), token, userIndex
+{
+    
+        "userID": "test1",
+        "pass": "test1"
+    
+}
+
+{
+  "message": "User created!",
+  "loggedInStatus": 1,
+  "token": "1464079910460test1",
+  "userIndex": "574416268d5b0aba1bab96bf"
+}
+
+{
+    
+        "userID": "test2",
+        "pass": "test2"
+    
+}
+{
+  "message": "User created!",
+  "loggedInStatus": 1,
+  "token": "1464081169918test2",
+  "userIndex": "57441b1158375b65571f8da0"
+}
+
+POST /post/: userIndex, url, token
+json
+	message, status (0 error, 1 created, -1 already exists), post
+
+{
+    
+        "userIndex": "574416268d5b0aba1bab96bf",
+        "token": "1464079910460test1",
+        "url": "google.com"
+    
+}
+
+
+{
+  "message": "Post created!",
+  "status": 1,
+  "post": "574416588d5b0aba1bab96c0"
+}
+
+
+POST /likePost/: postIndex, liked(0, 1), userIndex, token
+json
+	message, status
+
+{
+    
+        "postIndex": "574416588d5b0aba1bab96c0",
+        "liked": 1,
+        "userIndex": "574416268d5b0aba1bab96bf",
+        "token": "1464079910460test1"
+    
+}
+
+{
+  "message": "Post saved!",
+  "status": "1"
+}
+
+POST /addRemoveFriend/: userIndex, token, friendName, addRemove(1, -1)
+json
+	message, status
+
+{
+    
+        "friendName": "test2",
+        "addRemove": 1,
+        "userIndex": "574416268d5b0aba1bab96bf",
+        "token": "1464079910460test1"
+    
+}
+
+{
+  "message": "User updated",
+  "status": 1
+}
+
+POST /friendsThatLikedPost/: userIndex, token, postIndex
+json
+	data, status, message
+
+{
+    
+        "postIndex": "574416588d5b0aba1bab96c0",
+        "userIndex": "574416268d5b0aba1bab96bf",
+        "token": "1464079910460test1"
+    
+}
+
+{
+  "data": [
+    "57441b1158375b65571f8da0"
+  ],
+  "status": 1
+}
+
+GET /postLikedBy/userID
+json
+	data, status, message
+http://rumble-caffevino.rhcloud.com/api/postsLikedBy/57441b1158375b65571f8da0
+{
+  "data": [
+    "574416588d5b0aba1bab96c0"
+  ],
+  "status": 1
+}
+
+
+GET /postedBy/userID
+json
+	data, status, message
+http://rumble-caffevino.rhcloud.com/api/postedBy/574416268d5b0aba1bab96bf
+
+{
+  "data": [
+    "574416588d5b0aba1bab96c0"
+  ],
+  "status": 1
+}
+
+GET /browsePosts/userID/token/token
+json
+	data, status, message
+
+http://rumble-caffevino.rhcloud.com/api/browsePosts/574416268d5b0aba1bab96bf/token/1464079910460test1
+
+{
+  "data": [
+    "574416588d5b0aba1bab96c0"
+  ],
+  "status": 1
+}
